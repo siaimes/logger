@@ -1,0 +1,43 @@
+#refer: https://github.com/microsoft/pai/blob/master/deployment/sysconf/logging.yaml
+
+version: 1
+disable_existing_loggers: False
+formatters:
+    log_format:
+        format: "%(asctime)s [%(levelname)s] - %(name)s : %(message)s"
+
+handlers:
+    console:
+        class: logging.StreamHandler
+        level: DEBUG
+        formatter: log_format
+        stream: ext://sys.stdout
+
+    info_handler:
+        class: logging.handlers.RotatingFileHandler
+        level: INFO
+        formatter: log_format
+        filename: info.log
+        maxBytes: 10485760 # 10MB
+        backupCount: 20
+        encoding: utf8
+
+    error_handler:
+        class: logging.handlers.RotatingFileHandler
+        level: ERROR
+        formatter: log_format
+        filename: errors.log
+        maxBytes: 10485760 # 10MB
+        backupCount: 20
+        encoding: utf8
+
+loggers:
+    modulename:
+        level: ERROR
+        handlers: [console]
+        propagate: no
+
+
+root:
+    level: INFO
+    handlers: [console, info_handler, error_handler]
